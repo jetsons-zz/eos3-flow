@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .test-info {
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <h1>React 加载测试</h1>
+        <div id="status">正在测试...</div>
+        <div id="console"></div>
+    </div>
+    
+    <!-- React 应用应该挂载到这里 -->
+    <div id="root"></div>
+
+    <script type="module">
+        const status = document.getElementById('status');
+        const consoleDiv = document.getElementById('console');
+        
+        function log(message, type = 'info') {
+            console.log(message);
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = message;
+            consoleDiv.appendChild(div);
+        }
+        
+        // 检查 React 是否可以加载
+        try {
+            log('开始导入 React...', 'info');
+            
+            // 导入 React 相关模块
+            const React = await import('/@fs/Users/elonli/ClaudeCode/eos3-flow/node_modules/.vite/deps/react.js?v=30f41e19');
+            log('React 导入成功', 'success');
+            
+            const ReactDOM = await import('/@fs/Users/elonli/ClaudeCode/eos3-flow/node_modules/.vite/deps/react-dom_client.js?v=30f41e19');
+            log('ReactDOM 导入成功', 'success');
+            
+            // 尝试创建一个简单的 React 组件
+            const { createElement } = React.default || React;
+            const { createRoot } = ReactDOM.default || ReactDOM;
+            
+            log('开始创建简单 React 组件...', 'info');
+            
+            const testComponent = createElement('div', {
+                style: { 
+                    padding: '20px', 
+                    background: '#e7f3ff', 
+                    border: '2px solid #0066cc',
+                    borderRadius: '8px',
+                    margin: '20px 0'
+                }
+            }, 
+                createElement('h2', { style: { color: '#0066cc' } }, '✓ React 测试组件'),
+                createElement('p', null, '如果你看到这个消息，说明 React 正在正常工作！'),
+                createElement('p', null, `当前时间: ${new Date().toLocaleString()}`)
+            );
+            
+            const root = createRoot(document.getElementById('root'));
+            root.render(testComponent);
+            
+            log('React 组件渲染成功！', 'success');
+            status.textContent = '✓ React 工作正常';
+            status.className = 'success';
+            
+        } catch (error) {
+            log(`React 加载失败: ${error.message}`, 'error');
+            log(`错误堆栈: ${error.stack}`, 'error');
+            status.textContent = '✗ React 加载失败';
+            status.className = 'error';
+        }
+    </script>
+</body>
+</html>

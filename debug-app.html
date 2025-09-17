@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug EOS3 Flow</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .debug-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .error {
+            color: red;
+            background: #fff0f0;
+            padding: 10px;
+            border-left: 4px solid red;
+            margin: 10px 0;
+        }
+        .success {
+            color: green;
+            background: #f0fff0;
+            padding: 10px;
+            border-left: 4px solid green;
+            margin: 10px 0;
+        }
+        #root-check {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-info">
+        <h1>EOS3 Flow 前端调试页面</h1>
+        <p>正在检查前端渲染问题...</p>
+        
+        <div id="checks">
+            <h3>检查项目:</h3>
+        </div>
+        
+        <div id="root-check">
+            <p>这里应该显示 React 应用的内容</p>
+            <div id="root"></div>
+        </div>
+        
+        <div id="console-output">
+            <h3>控制台输出:</h3>
+            <div id="console-logs"></div>
+        </div>
+    </div>
+
+    <script>
+        // 捕获所有控制台输出
+        const consoleDiv = document.getElementById('console-logs');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function addToConsole(type, message) {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `[${type.toUpperCase()}] ${message}`;
+            consoleDiv.appendChild(div);
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole('success', args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole('error', args.join(' '));
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToConsole('error', args.join(' '));
+        };
+        
+        // 捕获未处理的错误
+        window.onerror = function(message, source, lineno, colno, error) {
+            addToConsole('error', `未处理的错误: ${message} at ${source}:${lineno}:${colno}`);
+            return false;
+        };
+        
+        window.addEventListener('unhandledrejection', function(event) {
+            addToConsole('error', `未处理的Promise拒绝: ${event.reason}`);
+        });
+        
+        // 基本检查
+        const checksDiv = document.getElementById('checks');
+        
+        function addCheck(name, result, details = '') {
+            const div = document.createElement('div');
+            div.className = result ? 'success' : 'error';
+            div.innerHTML = `<strong>${name}:</strong> ${result ? '✓ 通过' : '✗ 失败'} ${details}`;
+            checksDiv.appendChild(div);
+        }
+        
+        // 检查基本DOM
+        addCheck('DOM Ready', document.readyState === 'complete' || document.readyState === 'interactive');
+        addCheck('Root Element', !!document.getElementById('root'), document.getElementById('root') ? '' : '- 未找到#root元素');
+        
+        // 检查网络连接
+        fetch('/api/objectives')
+            .then(response => {
+                addCheck('API连接', response.ok, `- 状态码: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                addCheck('API数据', !!data, `- 数据: ${JSON.stringify(data).substring(0, 100)}...`);
+            })
+            .catch(error => {
+                addCheck('API连接', false, `- 错误: ${error.message}`);
+            });
+        
+        // 等待页面完全加载后检查React
+        setTimeout(() => {
+            const root = document.getElementById('root');
+            if (root) {
+                addCheck('React渲染', root.children.length > 0, `- 子元素数量: ${root.children.length}`);
+                if (root.children.length === 0) {
+                    addToConsole('error', 'React应用未渲染任何内容到#root元素');
+                }
+            }
+        }, 3000);
+        
+        console.log('调试页面已加载，开始检查...');
+    </script>
+    
+    <!-- 尝试加载React应用 -->
+    <script type="module">
+        try {
+            console.log('开始加载React模块...');
+            const { default: React } = await import('/src/main.tsx');
+            console.log('React模块加载成功');
+        } catch (error) {
+            console.error('React模块加载失败:', error);
+            console.error('错误堆栈:', error.stack);
+        }
+    </script>
+</body>
+</html>

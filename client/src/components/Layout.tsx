@@ -8,7 +8,8 @@ import {
   Settings as SettingsIcon,
   Zap,
   Users,
-  BarChart3
+  BarChart3,
+  Package
 } from 'lucide-react';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useFlowStore } from '../stores/flowStore';
@@ -25,6 +26,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigation = [
     { name: '仪表板', href: '/', icon: Home },
     { name: '创建目标', href: '/intake', icon: Plus },
+    { name: '资源管理', href: '/resources', icon: Package },
     { name: '待审批', href: '/approval', icon: CheckSquare },
     { name: '执行监控', href: '/execution', icon: Activity },
     { name: '设置', href: '/settings', icon: SettingsIcon },

@@ -12,6 +12,10 @@ import proposalRoutes from './routes/proposals.js';
 import simulationRoutes from './routes/simulation.js';
 import approvalRoutes from './routes/approval.js';
 import executionRoutes from './routes/execution.js';
+import resourceRoutes from './routes/resources.js';
+import pradyaRoutes from './routes/pradya.js';
+import jantraRoutes from './routes/jantra.js';
+import flowRoutes from './routes/flow.js';
 
 // 服务导入
 import { WebSocketManager } from './services/websocket.js';
@@ -47,6 +51,10 @@ app.use('/api/proposals', proposalRoutes);
 app.use('/api/simulation', simulationRoutes);
 app.use('/api/approval', approvalRoutes);
 app.use('/api/execution', executionRoutes);
+app.use('/api/resources', resourceRoutes);
+app.use('/api/pradya', pradyaRoutes);
+app.use('/api/jantra', jantraRoutes);
+app.use('/api/flow', flowRoutes);
 
 // 健康检查
 app.get('/api/health', (req, res) => {

@@ -60,6 +60,143 @@ export interface Resource {
   quantity: number;
   unit: string;
   cost?: number;
+  // 企业资源管理扩展字段
+  available?: number; // 可用数量
+  allocated?: number; // 已分配数量
+  description?: string;
+  department?: string;
+  location?: string;
+  status: 'active' | 'inactive' | 'maintenance';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// 人员资源详细信息
+export interface PersonResource extends Resource {
+  type: 'human';
+  email: string;
+  role: string;
+  skills: Skill[];
+  workload: number; // 0-100 当前工作负载百分比
+  hourlyRate?: number;
+  availability: AvailabilityPeriod[];
+  manager?: string; // 管理者ID
+  team?: string;
+}
+
+export interface Skill {
+  id: string;
+  name: string;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  yearsOfExperience: number;
+  certifications?: string[];
+}
+
+export interface AvailabilityPeriod {
+  startDate: Date;
+  endDate: Date;
+  availableHours: number; // 该时间段内的可用小时数
+  note?: string;
+}
+
+// 计算资源详细信息
+export interface ComputeResource extends Resource {
+  type: 'compute';
+  specifications: {
+    cpu?: string;
+    memory?: string;
+    storage?: string;
+    gpu?: string;
+    network?: string;
+  };
+  utilizationRate: number; // 0-100 使用率
+  maxConcurrentJobs: number;
+  currentJobs: number;
+  accessUrl?: string;
+}
+
+// 预算资源详细信息
+export interface BudgetResource extends Resource {
+  type: 'budget';
+  currency: string;
+  totalAmount: number;
+  spentAmount: number;
+  reservedAmount: number;
+  availableAmount: number;
+  fiscalYear: string;
+  budgetCategory: string;
+  approvalRequired: boolean;
+  approver?: string;
+}
+
+// 工具资源详细信息
+export interface ToolResource extends Resource {
+  type: 'tool';
+  vendor: string;
+  version?: string;
+  licenseType: 'perpetual' | 'subscription' | 'concurrent' | 'named_user';
+  maxUsers?: number;
+  currentUsers: number;
+  expirationDate?: Date;
+  renewalDate?: Date;
+  supportContact?: string;
+  documentationUrl?: string;
+}
+
+// 资源分配记录
+export interface ResourceAllocation {
+  id: string;
+  resourceId: string;
+  flowId?: string;
+  taskNodeId?: string;
+  allocatedBy: string;
+  allocatedTo: string; // 分配给谁（用户ID或团队ID）
+  quantity: number;
+  startDate: Date;
+  endDate: Date;
+  status: 'planned' | 'active' | 'completed' | 'cancelled';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// 资源使用历史
+export interface ResourceUsageHistory {
+  id: string;
+  resourceId: string;
+  flowId?: string;
+  taskNodeId?: string;
+  userId: string;
+  startTime: Date;
+  endTime?: Date;
+  quantityUsed: number;
+  efficiency: number; // 0-100 使用效率
+  outcome: 'success' | 'failed' | 'partial';
+  feedback?: string;
+  cost?: number;
+}
+
+// 资源容量规划
+export interface ResourceCapacityPlan {
+  id: string;
+  resourceType: Resource['type'];
+  department: string;
+  period: {
+    startDate: Date;
+    endDate: Date;
+  };
+  currentCapacity: number;
+  plannedCapacity: number;
+  demandForecast: number;
+  gapAnalysis: {
+    shortage: number;
+    surplus: number;
+    recommendations: string[];
+  };
+  costProjection: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Jantra仿真结果
@@ -214,6 +351,69 @@ export interface ViryaService {
 export interface MandalaService {
   recordFeedback(feedback: ExecutionFeedback[]): Promise<void>;
   updateCausalWeights(objectiveId: string, outcome: ExecutionStatus): Promise<void>;
+}
+
+// 资源管理服务接口
+export interface ResourceService {
+  // 通用资源操作
+  getAllResources(type?: Resource['type']): Promise<Resource[]>;
+  getResourceById(id: string): Promise<Resource>;
+  createResource(resource: Omit<Resource, 'id' | 'createdAt' | 'updatedAt'>): Promise<Resource>;
+  updateResource(id: string, updates: Partial<Resource>): Promise<Resource>;
+  deleteResource(id: string): Promise<void>;
+
+  // 资源分配
+  allocateResource(allocation: Omit<ResourceAllocation, 'id' | 'createdAt' | 'updatedAt'>): Promise<ResourceAllocation>;
+  deallocateResource(allocationId: string): Promise<void>;
+  getResourceAllocations(resourceId?: string, flowId?: string): Promise<ResourceAllocation[]>;
+
+  // 资源使用追踪
+  recordResourceUsage(usage: Omit<ResourceUsageHistory, 'id'>): Promise<ResourceUsageHistory>;
+  getResourceUsageHistory(resourceId: string, startDate?: Date, endDate?: Date): Promise<ResourceUsageHistory[]>;
+
+  // 容量规划
+  getCapacityPlan(department?: string, resourceType?: Resource['type']): Promise<ResourceCapacityPlan[]>;
+  createCapacityPlan(plan: Omit<ResourceCapacityPlan, 'id' | 'createdAt' | 'updatedAt'>): Promise<ResourceCapacityPlan>;
+
+  // 资源查找和推荐
+  findAvailableResources(criteria: ResourceSearchCriteria): Promise<Resource[]>;
+  recommendResources(taskRequirements: TaskResourceRequirement[]): Promise<ResourceRecommendation[]>;
+}
+
+// 资源搜索条件
+export interface ResourceSearchCriteria {
+  type?: Resource['type'];
+  department?: string;
+  skills?: string[]; // 对于人员资源
+  startDate: Date;
+  endDate: Date;
+  minQuantity?: number;
+  maxCost?: number;
+  location?: string;
+}
+
+// 任务资源需求
+export interface TaskResourceRequirement {
+  type: Resource['type'];
+  quantity: number;
+  duration: number; // 小时
+  skills?: string[]; // 对于人员资源
+  specifications?: Record<string, any>; // 对于设备资源
+  priority: 'low' | 'medium' | 'high' | 'critical';
+}
+
+// 资源推荐结果
+export interface ResourceRecommendation {
+  resource: Resource;
+  matchScore: number; // 0-100 匹配度
+  availability: {
+    startDate: Date;
+    endDate: Date;
+    availableQuantity: number;
+  };
+  estimatedCost: number;
+  reasons: string[]; // 推荐理由
+  alternatives?: ResourceRecommendation[]; // 备选方案
 }
 
 // API响应类型

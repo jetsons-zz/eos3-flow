@@ -64,10 +64,16 @@ const ObjectiveIntake: React.FC = () => {
       const cleanConstraints = formData.constraints.filter(c => c.trim());
       const cleanKpis = formData.kpis
         .filter(kpi => kpi.name && kpi.metric && kpi.target && kpi.unit)
-        .map(kpi => ({
-          ...kpi,
-          target: Number(kpi.target)
+        .map((kpi, index) => ({
+          id: `kpi-${index}`, // 生成临时ID
+          name: kpi.name,
+          metric: kpi.metric,
+          target: Number(kpi.target),
+          unit: kpi.unit,
+          current: undefined
         }));
+
+      console.log('正在创建目标...');
 
       await createObjective({
         title: formData.title.trim(),
@@ -78,8 +84,12 @@ const ObjectiveIntake: React.FC = () => {
         kpis: cleanKpis
       });
 
+      console.log('目标创建成功，正在跳转...');
+
       // 成功后跳转到仪表板
-      navigate('/');
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
     } catch (error) {
       console.error('创建目标失败:', error);
     }

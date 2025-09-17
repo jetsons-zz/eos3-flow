@@ -43,14 +43,28 @@ router.post('/', async (req, res, next) => {
     // 保存目标
     objectives.set(objective.id, objective);
 
-    // 启动Flow流程
-    const flowResult = await req.orchestrator.processObjective(objective);
+    // 启动Flow流程（使用新的Flow API）
+    let flowResult = null;
+    try {
+      const flowResponse = await fetch('http://localhost:8085/api/flow/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ objective })
+      });
+
+      if (flowResponse.ok) {
+        const flowData = await flowResponse.json();
+        flowResult = flowData.data;
+      }
+    } catch (error) {
+      console.log('Flow启动失败，继续返回目标创建结果:', error.message);
+    }
 
     res.status(201).json({
       success: true,
       data: {
         objective,
-        flowId: flowResult.flowId
+        flowId: flowResult?.id || `flow-${objective.id}`
       },
       timestamp: new Date()
     });

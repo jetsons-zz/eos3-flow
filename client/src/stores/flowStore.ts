@@ -65,7 +65,7 @@ export const useFlowStore = create<FlowState>()(
         set({ isLoading: true, error: null });
 
         try {
-          const response = await fetch('http://localhost:8085/api/objectives', {
+          const response = await fetch('http://192.168.9.104:8085/api/objectives', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ export const useFlowStore = create<FlowState>()(
         set({ isLoading: true, error: null });
 
         try {
-          const response = await fetch(`http://localhost:8085/api/objectives?userId=${get().currentUser}`);
+          const response = await fetch(`http://192.168.9.104:8085/api/objectives?userId=${get().currentUser}`);
 
           if (!response.ok) {
             throw new Error('加载目标列表失败');

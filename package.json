@@ -6,8 +6,11 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "dev:network": "concurrently \"npm run server:dev:network\" \"npm run client:dev:network\"",
     "server:dev": "nodemon server/index.js",
+    "server:dev:network": "HOST=0.0.0.0 PORT=8085 nodemon server/index.js",
     "client:dev": "vite",
+    "client:dev:network": "vite --host 0.0.0.0 --port 3003",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",

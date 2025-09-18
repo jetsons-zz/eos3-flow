@@ -12,14 +12,16 @@ export default defineConfig({
     }
   },
   server: {
+    host: '0.0.0.0', // 允许外部访问
     port: 3000,
+    strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8081',
+        target: 'http://192.168.9.104:8085',
         changeOrigin: true
       },
       '/ws': {
-        target: 'ws://localhost:8081',
+        target: 'ws://192.168.9.104:8085',
         ws: true
       }
     }

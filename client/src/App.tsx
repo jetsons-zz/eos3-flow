@@ -15,7 +15,7 @@ import { Toaster } from './components/ui/Toaster';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen tech-gradient-bg">
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />

@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # 后端API服务
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8085:8085"
+    environment:
+      - NODE_ENV=development
+      - PORT=8085
+      - HOST=0.0.0.0
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - eos3-network
+
+  # 前端应用服务
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - HOST=0.0.0.0
+      - VITE_HOST=0.0.0.0
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - eos3-network
+
+networks:
+  eos3-network:
+    driver: bridge

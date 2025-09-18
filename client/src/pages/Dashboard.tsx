@@ -54,15 +54,15 @@ const Dashboard: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'text-green-600 bg-green-100';
+        return 'text-tech-accent bg-tech-accent/20 border border-tech-accent/30';
       case 'executing':
-        return 'text-blue-600 bg-blue-100';
+        return 'text-tech-secondary bg-tech-secondary/20 border border-tech-secondary/30';
       case 'awaiting_approval':
-        return 'text-yellow-600 bg-yellow-100';
+        return 'text-yellow-400 bg-yellow-400/20 border border-yellow-400/30';
       case 'failed':
-        return 'text-red-600 bg-red-100';
+        return 'text-red-400 bg-red-400/20 border border-red-400/30';
       default:
-        return 'text-gray-600 bg-gray-100';
+        return 'text-gray-400 bg-gray-400/20 border border-gray-400/30';
     }
   };
 
@@ -98,15 +98,15 @@ const Dashboard: React.FC = () => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return 'text-red-600';
+        return 'text-red-400';
       case 'high':
-        return 'text-orange-600';
+        return 'text-orange-400';
       case 'medium':
-        return 'text-yellow-600';
+        return 'text-yellow-400';
       case 'low':
-        return 'text-green-600';
+        return 'text-tech-accent';
       default:
-        return 'text-gray-600';
+        return 'text-gray-400';
     }
   };
 
@@ -114,12 +114,12 @@ const Dashboard: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-64">
         <div className="text-center">
-          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">加载失败</h3>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4 animate-pulse" />
+          <h3 className="text-lg font-medium text-white mb-2">加载失败</h3>
+          <p className="text-gray-300 mb-4">{error}</p>
           <button
             onClick={() => loadObjectives()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="px-6 py-3 button-gradient-bg text-white rounded-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105"
           >
             重试
           </button>
@@ -133,56 +133,56 @@ const Dashboard: React.FC = () => {
       {/* 页面标题和操作 */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">仪表板</h1>
-          <p className="text-gray-600 mt-1">欢迎回到 Flow 智能任务调度中枢</p>
+          <h1 className="text-3xl font-bold text-white animate-slide-in">仪表板</h1>
+          <p className="text-gray-300 mt-2">欢迎回到 Flow 智能任务调度中枢</p>
         </div>
         <Link
           to="/intake"
-          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center px-6 py-3 button-gradient-bg text-white rounded-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 shadow-tech"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-5 w-5 mr-2" />
           创建新目标
         </Link>
       </div>
 
       {/* 统计卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="card-gradient-bg rounded-xl shadow-lg border border-gray-600 p-6 hover:shadow-2xl transition-all duration-300 animate-slide-in">
           <div className="flex items-center">
-            <BarChart3 className="h-8 w-8 text-blue-600" />
+            <BarChart3 className="h-10 w-10 text-purple-500 animate-float" />
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">总目标数</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalObjectives}</p>
+              <p className="text-sm font-medium text-gray-300">总目标数</p>
+              <p className="text-3xl font-bold text-white mt-1">{stats.totalObjectives}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="card-gradient-bg rounded-xl shadow-lg border border-gray-600 p-6 hover:shadow-2xl transition-all duration-300 animate-slide-in" style={{animationDelay: '0.1s'}}>
           <div className="flex items-center">
-            <Zap className="h-8 w-8 text-green-600" />
+            <Zap className="h-10 w-10 text-green-400 animate-float" />
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">活跃流程</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.activeFlows}</p>
+              <p className="text-sm font-medium text-gray-300">活跃流程</p>
+              <p className="text-3xl font-bold text-white mt-1">{stats.activeFlows}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="card-gradient-bg rounded-xl shadow-card border border-gray-600 p-6 hover:shadow-glow transition-all duration-300 animate-slide-in" style={{animationDelay: '0.2s'}}>
           <div className="flex items-center">
-            <Clock className="h-8 w-8 text-yellow-600" />
+            <Clock className="h-10 w-10 text-yellow-400 animate-float" />
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">待审批</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.pendingApprovals}</p>
+              <p className="text-sm font-medium text-gray-300">待审批</p>
+              <p className="text-3xl font-bold text-white mt-1">{stats.pendingApprovals}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="card-gradient-bg rounded-xl shadow-card border border-gray-600 p-6 hover:shadow-glow transition-all duration-300 animate-slide-in" style={{animationDelay: '0.3s'}}>
           <div className="flex items-center">
-            <CheckCircle className="h-8 w-8 text-green-600" />
+            <CheckCircle className="h-10 w-10 text-green-400 animate-float" />
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">已完成</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.completedTasks}</p>
+              <p className="text-sm font-medium text-gray-300">已完成</p>
+              <p className="text-3xl font-bold text-white mt-1">{stats.completedTasks}</p>
             </div>
           </div>
         </div>
@@ -191,9 +191,9 @@ const Dashboard: React.FC = () => {
       {/* 主要内容区域 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 最近的Flow */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">最近的流程</h3>
+        <div className="card-gradient-bg rounded-xl shadow-card border border-gray-600 backdrop-blur-xl">
+          <div className="p-6 border-b border-gray-600">
+            <h3 className="text-lg font-medium text-white">最近的流程</h3>
           </div>
           <div className="p-6">
             {isLoading ? (
@@ -207,11 +207,11 @@ const Dashboard: React.FC = () => {
               </div>
             ) : recentFlows.length === 0 ? (
               <div className="text-center py-8">
-                <Zap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">暂无流程</p>
+                <Zap className="h-12 w-12 text-gray-400 mx-auto mb-4 animate-pulse" />
+                <p className="text-gray-300">暂无流程</p>
                 <Link
                   to="/intake"
-                  className="text-blue-600 hover:text-blue-700 font-medium"
+                  className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
                 >
                   创建第一个目标
                 </Link>
@@ -222,14 +222,14 @@ const Dashboard: React.FC = () => {
                   <Link
                     key={flow.id}
                     to={`/flow/${flow.id}`}
-                    className="block p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
+                    className="block p-4 border border-gray-600 rounded-xl hover:border-tech-primary hover:shadow-tech transition-all duration-300 bg-gray-800/30 backdrop-blur-sm"
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-gray-900 truncate">
+                        <h4 className="text-sm font-medium text-white truncate">
                           {flow.objective.title}
                         </h4>
-                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                        <p className="text-sm text-gray-300 mt-1 line-clamp-2">
                           {flow.objective.description}
                         </p>
                         <div className="flex items-center mt-2 space-x-4">
@@ -249,7 +249,7 @@ const Dashboard: React.FC = () => {
                           </span>
                         </div>
                       </div>
-                      <div className="ml-4 text-xs text-gray-500">
+                      <div className="ml-4 text-xs text-gray-400">
                         {new Intl.RelativeTimeFormat('zh-CN', { numeric: 'auto' }).format(
                           Math.floor((flow.updatedAt.getTime() - Date.now()) / (1000 * 60 * 60)),
                           'hour'
@@ -266,70 +266,70 @@ const Dashboard: React.FC = () => {
         {/* 快速操作和状态 */}
         <div className="space-y-6">
           {/* 快速操作 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-6 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">快速操作</h3>
+          <div className="card-gradient-bg rounded-xl shadow-card border border-gray-600 backdrop-blur-xl">
+            <div className="p-6 border-b border-gray-600">
+              <h3 className="text-lg font-medium text-white">快速操作</h3>
             </div>
             <div className="p-6 grid grid-cols-2 gap-4">
               <Link
                 to="/intake"
-                className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
+                className="flex items-center p-4 border border-gray-600 rounded-xl hover:border-tech-primary hover:shadow-tech transition-all duration-300 bg-gray-800/20 backdrop-blur-sm group"
               >
-                <Plus className="h-6 w-6 text-blue-600 mr-3" />
+                <Plus className="h-6 w-6 text-tech-primary mr-3 group-hover:animate-bounce" />
                 <div>
-                  <p className="font-medium text-gray-900">创建目标</p>
-                  <p className="text-sm text-gray-600">启动新的流程</p>
+                  <p className="font-medium text-white">创建目标</p>
+                  <p className="text-sm text-gray-300">启动新的流程</p>
                 </div>
               </Link>
 
               <Link
                 to="/approval"
-                className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
+                className="flex items-center p-4 border border-gray-600 rounded-xl hover:border-tech-accent hover:shadow-tech transition-all duration-300 bg-gray-800/20 backdrop-blur-sm group"
               >
-                <CheckCircle className="h-6 w-6 text-green-600 mr-3" />
+                <CheckCircle className="h-6 w-6 text-tech-accent mr-3 group-hover:animate-bounce" />
                 <div>
-                  <p className="font-medium text-gray-900">审批中心</p>
-                  <p className="text-sm text-gray-600">处理待审批事项</p>
+                  <p className="font-medium text-white">审批中心</p>
+                  <p className="text-sm text-gray-300">处理待审批事项</p>
                 </div>
               </Link>
 
               <Link
                 to="/execution"
-                className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
+                className="flex items-center p-4 border border-gray-600 rounded-xl hover:border-orange-400 hover:shadow-tech transition-all duration-300 bg-gray-800/20 backdrop-blur-sm group"
               >
-                <Activity className="h-6 w-6 text-orange-600 mr-3" />
+                <Activity className="h-6 w-6 text-orange-400 mr-3 group-hover:animate-bounce" />
                 <div>
-                  <p className="font-medium text-gray-900">执行监控</p>
-                  <p className="text-sm text-gray-600">查看执行状态</p>
+                  <p className="font-medium text-white">执行监控</p>
+                  <p className="text-sm text-gray-300">查看执行状态</p>
                 </div>
               </Link>
 
               <Link
                 to="/settings"
-                className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
+                className="flex items-center p-4 border border-gray-600 rounded-xl hover:border-tech-glow hover:shadow-tech transition-all duration-300 bg-gray-800/20 backdrop-blur-sm group"
               >
-                <Users className="h-6 w-6 text-purple-600 mr-3" />
+                <Users className="h-6 w-6 text-tech-glow mr-3 group-hover:animate-bounce" />
                 <div>
-                  <p className="font-medium text-gray-900">设置</p>
-                  <p className="text-sm text-gray-600">配置系统选项</p>
+                  <p className="font-medium text-white">设置</p>
+                  <p className="text-sm text-gray-300">配置系统选项</p>
                 </div>
               </Link>
             </div>
           </div>
 
           {/* 系统状态 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-6 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">系统状态</h3>
+          <div className="card-gradient-bg rounded-xl shadow-card border border-gray-600 backdrop-blur-xl">
+            <div className="p-6 border-b border-gray-600">
+              <h3 className="text-lg font-medium text-white">系统状态</h3>
             </div>
             <div className="p-6 space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">WebSocket连接</span>
+                <span className="text-sm text-gray-300">WebSocket连接</span>
                 <span
-                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
                     isConnected
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
+                      ? 'bg-tech-accent/20 text-tech-accent border-tech-accent/30 animate-pulse'
+                      : 'bg-red-400/20 text-red-400 border-red-400/30'
                   }`}
                 >
                   {isConnected ? '已连接' : '未连接'}
@@ -337,13 +337,13 @@ const Dashboard: React.FC = () => {
               </div>
 
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">当前用户</span>
-                <span className="text-sm font-medium text-gray-900">{currentUser}</span>
+                <span className="text-sm text-gray-300">当前用户</span>
+                <span className="text-sm font-medium text-white">{currentUser}</span>
               </div>
 
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">系统版本</span>
-                <span className="text-sm font-medium text-gray-900">v1.0.0</span>
+                <span className="text-sm text-gray-300">系统版本</span>
+                <span className="text-sm font-medium text-purple-400">v2.0.0</span>
               </div>
             </div>
           </div>

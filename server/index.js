@@ -85,10 +85,12 @@ app.use('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 8082;
+const HOST = process.env.HOST || '0.0.0.0';
 
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   console.log(`🚀 Flow服务器启动成功`);
   console.log(`📡 HTTP服务: http://localhost:${PORT}`);
+  console.log(`🌐 局域网访问: http://192.168.9.104:${PORT}`);
   console.log(`🔌 WebSocket服务: ws://localhost:${PORT}`);
   console.log(`📊 健康检查: http://localhost:${PORT}/api/health`);
 });
